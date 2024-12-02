@@ -27,11 +27,11 @@ public class Screening {
     private Float price;
     private String subtitleType;
     private Boolean isActive = true;
-
-    @OneToMany(mappedBy = "screening")
-    private List<Booking> bookings;
-
-    @OneToMany(mappedBy = "screening")
-    private List<ScreeningSeat> screeningSeats;
+//
+//    @OneToMany(mappedBy = "screening")
+//    private List<Booking> bookings;
+//
+//    @OneToMany(mappedBy = "screening")
+//    private List<ScreeningSeat> screeningSeats;
 }
 

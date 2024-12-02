@@ -17,7 +17,7 @@ public class Category {
     private String name;
 
     private String description;
-
-    @OneToMany(mappedBy = "category")
-    private List<MovieCategory> movies;
+//
+//    @OneToMany(mappedBy = "category")
+//    private List<MovieCategory> movies;
 }

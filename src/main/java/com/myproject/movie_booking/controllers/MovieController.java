@@ -1,7 +1,6 @@
 package com.myproject.movie_booking.controllers;
 
 import com.myproject.movie_booking.models.Movie;
-import com.myproject.movie_booking.models.ScreeningSeat;
 import com.myproject.movie_booking.services.MovieService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -31,8 +30,8 @@ public class MovieController {
         return movie.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    @GetMapping("/available-seats/{movieId}")
-    public List<ScreeningSeat> getAvailableSeatsByMovieId(@PathVariable Integer movieId) {
-        return movieService.getAvailableSeatsByMovieId(movieId);
-    }
+//    @GetMapping("/available-seats/{movieId}")
+//    public List<SeatInfoDTO> getAvailableSeatsByMovieId(@PathVariable Integer movieId) {
+//        return movieService.getAvailableSeatsByMovieId(movieId);
+//    }
 }

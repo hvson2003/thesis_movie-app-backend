@@ -24,5 +24,5 @@ public class Review {
     private Integer rating;
     private String comment;
     private LocalDateTime createdAt = LocalDateTime.now();
-    private Boolean isApproved = false;
+    private String isApproved;
 }

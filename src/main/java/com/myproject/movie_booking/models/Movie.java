@@ -1,5 +1,6 @@
 package com.myproject.movie_booking.models;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -25,6 +26,7 @@ public class Movie {
     private Integer duration;
     private LocalDateTime releaseDate;
     private String director;
+    private String actors;
     private String language;
     private String subtitle;
     private String rating;
@@ -37,6 +39,8 @@ public class Movie {
 //    @OneToMany(mappedBy = "movie")
 //    private List<Review> reviews;
 //
-//    @OneToMany(mappedBy = "movie")
-//    private List<MovieCategory> categories;
+    @OneToMany(mappedBy = "movie")
+    @JsonManagedReference
+
+    private List<MovieCategory> categories;
 }

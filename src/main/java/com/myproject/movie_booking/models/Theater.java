@@ -22,6 +22,7 @@ public class Theater {
     private String description;
     private Boolean isActive = true;
 
-    @OneToMany(mappedBy = "theater")
-    private List<Room> rooms;
+    private Integer brandId;
+//    @OneToMany(mappedBy = "theater")
+//    private List<Room> rooms;
 }

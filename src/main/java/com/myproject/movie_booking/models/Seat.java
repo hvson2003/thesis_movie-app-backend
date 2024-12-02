@@ -23,7 +23,7 @@ public class Seat {
     private String row;
     private String seatType = "standard";
     private Boolean isActive = true;
-
-    @OneToMany(mappedBy = "seat")
-    private List<ScreeningSeat> screeningSeats;
+//
+//    @OneToMany(mappedBy = "seat")
+//    private List<ScreeningSeat> screeningSeats;
 }

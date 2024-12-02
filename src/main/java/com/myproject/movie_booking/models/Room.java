@@ -24,9 +24,9 @@ public class Room {
     private String roomType;
     private Boolean isActive = true;
 
-    @OneToMany(mappedBy = "room")
-    private List<Seat> seats;
-
-    @OneToMany(mappedBy = "room")
-    private List<Screening> screenings;
+//    @OneToMany(mappedBy = "room")
+//    private List<Seat> seats;
+//
+//    @OneToMany(mappedBy = "room")
+//    private List<Screening> screenings;
 }

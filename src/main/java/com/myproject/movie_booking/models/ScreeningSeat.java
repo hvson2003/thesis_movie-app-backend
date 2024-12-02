@@ -24,7 +24,7 @@ public class ScreeningSeat {
     private String status = "available";
     private Float price;
 
-    @OneToMany(mappedBy = "screeningSeat")
-    private List<BookingSeat> bookings;
+//    @OneToMany(mappedBy = "screeningSeat")
+//    private List<BookingSeat> bookings;
 }
 
