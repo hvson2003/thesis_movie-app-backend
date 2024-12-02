@@ -1,7 +1,6 @@
 package com.myproject.movie_booking.dtos.requests;
 
 import com.myproject.movie_booking.models.User;
-import jakarta.persistence.Column;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -14,7 +13,7 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class RegisterRequest {
+public class RegisterRequestDTO {
     private String username;
     private String email;
     private String password;

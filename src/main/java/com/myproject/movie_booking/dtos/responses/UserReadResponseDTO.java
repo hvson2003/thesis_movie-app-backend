@@ -5,7 +5,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Data
-public class UserReadResponse {
+public class UserReadResponseDTO {
     private Long id;
     private String email;
     private String fullName;

@@ -1,8 +1,8 @@
 package com.myproject.movie_booking.services;
 
-import com.myproject.movie_booking.dtos.requests.AuthRequest;
-import com.myproject.movie_booking.dtos.requests.RegisterRequest;
-import com.myproject.movie_booking.dtos.responses.AuthResponse;
+import com.myproject.movie_booking.dtos.requests.AuthRequestDTO;
+import com.myproject.movie_booking.dtos.requests.RegisterRequestDTO;
+import com.myproject.movie_booking.dtos.responses.AuthResponseDTO;
 import com.myproject.movie_booking.models.User;
 import com.myproject.movie_booking.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +21,7 @@ public class AuthService {
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
 
-    public AuthResponse register(RegisterRequest request) {
+    public AuthResponseDTO register(RegisterRequestDTO request) {
         var user = User
                 .builder()
                 .email(request.getEmail())
@@ -35,12 +35,12 @@ public class AuthService {
                 .build();
         repository.save(user);
         var jwtToken = jwtService.generateToken(user);
-        return AuthResponse.builder()
+        return AuthResponseDTO.builder()
                 .token(jwtToken)
                 .build();
     }
 
-    public AuthResponse authenticate(AuthRequest request) {
+    public AuthResponseDTO authenticate(AuthRequestDTO request) {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         request.getEmail(),
@@ -50,7 +50,7 @@ public class AuthService {
         var user = repository.findByEmail(request.getEmail())
                 .orElseThrow();
         var jwtToken = jwtService.generateToken(user);
-        return AuthResponse.builder()
+        return AuthResponseDTO.builder()
                 .token(jwtToken)
                 .build();
     }

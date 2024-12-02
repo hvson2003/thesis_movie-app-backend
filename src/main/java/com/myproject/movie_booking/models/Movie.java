@@ -1,6 +1,5 @@
 package com.myproject.movie_booking.models;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -33,14 +32,10 @@ public class Movie {
     private Boolean isActive = true;
     private LocalDateTime createdAt = LocalDateTime.now();
 
-//    @OneToMany(mappedBy = "movie")
-//    private List<Screening> screenings;
-//
-//    @OneToMany(mappedBy = "movie")
-//    private List<Review> reviews;
-//
-    @OneToMany(mappedBy = "movie")
-    @JsonManagedReference
-
-    private List<MovieCategory> categories;
+    @ManyToMany
+    @JoinTable(
+            name = "movie_categories",
+            joinColumns = @JoinColumn(name = "movie_id"),
+            inverseJoinColumns = @JoinColumn(name = "category_id"))
+    private List<Category> categories;
 }

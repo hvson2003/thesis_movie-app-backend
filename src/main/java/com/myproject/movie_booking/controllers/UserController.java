@@ -1,8 +1,8 @@
 package com.myproject.movie_booking.controllers;
 
-import com.myproject.movie_booking.dtos.requests.UserCreateRequest;
-import com.myproject.movie_booking.dtos.responses.UserReadResponse;
-import com.myproject.movie_booking.dtos.responses.UserUpdateResponse;
+import com.myproject.movie_booking.dtos.requests.UserCreateRequestDTO;
+import com.myproject.movie_booking.dtos.responses.UserReadResponseDTO;
+import com.myproject.movie_booking.dtos.responses.UserUpdateResponseDTO;
 import com.myproject.movie_booking.services.UserService;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
@@ -23,9 +23,9 @@ public class UserController {
 
     @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     @PostMapping
-    public ResponseEntity<UserCreateRequest> createUser(@Valid @RequestBody UserCreateRequest userCreateRequest) {
-        log.info("Creating new user: {}", userCreateRequest.getEmail());
-        UserCreateRequest createdUser = userService.createUser(userCreateRequest);
+    public ResponseEntity<UserCreateRequestDTO> createUser(@Valid @RequestBody UserCreateRequestDTO userCreateRequestDTO) {
+        log.info("Creating new user: {}", userCreateRequestDTO.getEmail());
+        UserCreateRequestDTO createdUser = userService.createUser(userCreateRequestDTO);
         log.info("User created successfully: {}", createdUser.getEmail());
 
         return ResponseEntity.status(HttpStatus.CREATED).body(createdUser);
@@ -33,7 +33,7 @@ public class UserController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping
-    public ResponseEntity<List<UserReadResponse>> getAllUsers() {
+    public ResponseEntity<List<UserReadResponseDTO>> getAllUsers() {
         log.info("Fetching all users");
 
         return ResponseEntity.ok(userService.getAllUsers());
@@ -41,7 +41,7 @@ public class UserController {
 
     @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     @GetMapping("/{id}")
-    public ResponseEntity<UserReadResponse> getUserById(@PathVariable Long id) {
+    public ResponseEntity<UserReadResponseDTO> getUserById(@PathVariable Long id) {
         log.info("Fetching user with ID: {}", id);
 
         return ResponseEntity.ok(userService.getUserById(id));
@@ -49,10 +49,9 @@ public class UserController {
 
     @PreAuthorize("hasAnyRole('USER', 'ADMIN') and @customPermissionChecker.hasAccess(authentication, #id)")
     @PutMapping("/{id}")
-    public ResponseEntity<UserUpdateResponse> updateUser(@PathVariable Long id, @RequestBody UserUpdateResponse userUpdateResponse) {
+    public ResponseEntity<UserUpdateResponseDTO> updateUser(@PathVariable Long id, @RequestBody UserUpdateResponseDTO userUpdateResponseDTO) {
         log.info("Updating user with ID: {}", id);
-        System.out.println(userUpdateResponse);
-        UserUpdateResponse updatedUser = userService.updateUser(id, userUpdateResponse);
+        UserUpdateResponseDTO updatedUser = userService.updateUser(id, userUpdateResponseDTO);
         log.info("User with ID {} updated successfully", id);
 
         return ResponseEntity.ok(updatedUser);    }

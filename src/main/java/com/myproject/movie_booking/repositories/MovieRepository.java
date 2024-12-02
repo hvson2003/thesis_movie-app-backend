@@ -6,10 +6,9 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.Optional;
 
 @Repository
-public interface MovieRepository extends JpaRepository<Movie, Integer> {
-    @Query("SELECT m FROM Movie m JOIN FETCH m.categories mc JOIN FETCH mc.category")
+public interface MovieRepository extends JpaRepository<Movie, Long> {
+    @Query("SELECT m FROM Movie m JOIN FETCH m.categories")
     List<Movie> findAllMoviesWithCategories();
 }

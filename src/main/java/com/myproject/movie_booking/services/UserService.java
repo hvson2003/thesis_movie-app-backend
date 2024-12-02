@@ -1,8 +1,8 @@
 package com.myproject.movie_booking.services;
 
-import com.myproject.movie_booking.dtos.requests.UserCreateRequest;
-import com.myproject.movie_booking.dtos.responses.UserReadResponse;
-import com.myproject.movie_booking.dtos.responses.UserUpdateResponse;
+import com.myproject.movie_booking.dtos.requests.UserCreateRequestDTO;
+import com.myproject.movie_booking.dtos.responses.UserReadResponseDTO;
+import com.myproject.movie_booking.dtos.responses.UserUpdateResponseDTO;
 import com.myproject.movie_booking.models.User;
 import com.myproject.movie_booking.repositories.UserRepository;
 import jakarta.transaction.Transactional;
@@ -24,32 +24,32 @@ public class UserService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    public UserCreateRequest createUser(@Valid @RequestBody UserCreateRequest userCreateRequest) {
-        User user = convertToEntity(userCreateRequest);
-        user.setPasswordHash(passwordEncoder.encode(userCreateRequest.getPassword()));
+    public UserCreateRequestDTO createUser(@Valid @RequestBody UserCreateRequestDTO userCreateRequestDTO) {
+        User user = convertToEntity(userCreateRequestDTO);
+        user.setPasswordHash(passwordEncoder.encode(userCreateRequestDTO.getPassword()));
         userRepository.save(user);
 
         return convertToCreateDto(user);
     }
 
-    public List<UserReadResponse> getAllUsers() {
+    public List<UserReadResponseDTO> getAllUsers() {
         return userRepository.findByIsActiveTrue()
                 .stream()
                 .map(this::convertToUserReadDTO)
                 .collect(Collectors.toList());
     }
 
-    public UserReadResponse getUserById(@PathVariable Long id) {
+    public UserReadResponseDTO getUserById(@PathVariable Long id) {
         return userRepository.findById(id)
                 .map(this::convertToUserReadDTO)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + id));
     }
 
     @Transactional
-    public UserUpdateResponse updateUser(@PathVariable Long id, UserUpdateResponse userUpdateResponse) {
+    public UserUpdateResponseDTO updateUser(@PathVariable Long id, UserUpdateResponseDTO userUpdateResponseDTO) {
         User existingUser = userRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + id));
-        updateEntity(existingUser, userUpdateResponse);
+        updateEntity(existingUser, userUpdateResponseDTO);
 
         return convertToUpdateDto(userRepository.save(existingUser));
     }
@@ -64,7 +64,7 @@ public class UserService {
         return true;
     }
 
-    private void updateEntity(User user, UserUpdateResponse dto) {
+    private void updateEntity(User user, UserUpdateResponseDTO dto) {
         if (dto.getEmail() != null) user.setEmail(dto.getEmail());
         if (dto.getPassword() != null && !dto.getPassword().isEmpty()) {
             user.setPasswordHash(passwordEncoder.encode(dto.getPassword()));
@@ -75,8 +75,8 @@ public class UserService {
         if (dto.getIsActive() != null) user.setActive(dto.getIsActive());
     }
 
-    private UserCreateRequest convertToCreateDto(User user) {
-        UserCreateRequest userDto = new UserCreateRequest();
+    private UserCreateRequestDTO convertToCreateDto(User user) {
+        UserCreateRequestDTO userDto = new UserCreateRequestDTO();
         userDto.setEmail(user.getEmail());
         userDto.setFullName(user.getFullName());
         userDto.setPhone(user.getPhone());
@@ -86,7 +86,7 @@ public class UserService {
         return userDto;
     }
 
-    private User convertToEntity(UserCreateRequest userDto) {
+    private User convertToEntity(UserCreateRequestDTO userDto) {
         User user = new User();
         user.setEmail(userDto.getEmail());
         user.setFullName(userDto.getFullName());
@@ -97,28 +97,28 @@ public class UserService {
         return user;
     }
 
-    private UserUpdateResponse convertToUpdateDto(User user) {
-        UserUpdateResponse userUpdateResponse = new UserUpdateResponse();
-        userUpdateResponse.setEmail(user.getEmail());
-        userUpdateResponse.setPassword(user.getPasswordHash());
-        userUpdateResponse.setFullName(user.getFullName());
-        userUpdateResponse.setPhone(user.getPhone());
-        userUpdateResponse.setBirthDate(user.getBirthDate());
-        userUpdateResponse.setIsActive(user.isActive());
+    private UserUpdateResponseDTO convertToUpdateDto(User user) {
+        UserUpdateResponseDTO userUpdateResponseDTO = new UserUpdateResponseDTO();
+        userUpdateResponseDTO.setEmail(user.getEmail());
+        userUpdateResponseDTO.setPassword(user.getPasswordHash());
+        userUpdateResponseDTO.setFullName(user.getFullName());
+        userUpdateResponseDTO.setPhone(user.getPhone());
+        userUpdateResponseDTO.setBirthDate(user.getBirthDate());
+        userUpdateResponseDTO.setIsActive(user.isActive());
 
-        return userUpdateResponse;
+        return userUpdateResponseDTO;
     }
 
-    private UserReadResponse convertToUserReadDTO(User user) {
-        UserReadResponse userReadResponse = new UserReadResponse();
-        userReadResponse.setId(user.getId());
-        userReadResponse.setEmail(user.getEmail());
-        userReadResponse.setFullName(user.getFullName());
-        userReadResponse.setPhone(user.getPhone());
-        userReadResponse.setBirthDate(user.getBirthDate());
-        userReadResponse.setActive(user.isActive());
+    private UserReadResponseDTO convertToUserReadDTO(User user) {
+        UserReadResponseDTO userReadResponseDTO = new UserReadResponseDTO();
+        userReadResponseDTO.setId(user.getId());
+        userReadResponseDTO.setEmail(user.getEmail());
+        userReadResponseDTO.setFullName(user.getFullName());
+        userReadResponseDTO.setPhone(user.getPhone());
+        userReadResponseDTO.setBirthDate(user.getBirthDate());
+        userReadResponseDTO.setActive(user.isActive());
 
-        return userReadResponse;
+        return userReadResponseDTO;
     }
 
     public class ResourceNotFoundException extends RuntimeException {
