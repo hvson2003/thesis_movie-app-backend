@@ -8,7 +8,7 @@ import java.util.List;
 public interface UserService {
     UserCreateRequestDTO createUser(UserCreateRequestDTO userCreateRequestDTO);
     List<UserReadResponseDTO> getAllUsers();
-    UserReadResponseDTO getUserById(Long id);
-    UserUpdateResponseDTO updateUser(Long id, UserUpdateResponseDTO userUpdateResponseDTO);
-    boolean deleteUser(Long id);
+    UserReadResponseDTO getUserById(Integer id);
+    UserUpdateResponseDTO updateUser(Integer id, UserUpdateResponseDTO userUpdateResponseDTO);
+    void deleteUser(Integer id);
 }

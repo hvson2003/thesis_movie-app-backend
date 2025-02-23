@@ -1,4 +1,4 @@
-package com.myproject.movie.config;
+package com.myproject.movie.configs;
 
 import com.myproject.movie.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;

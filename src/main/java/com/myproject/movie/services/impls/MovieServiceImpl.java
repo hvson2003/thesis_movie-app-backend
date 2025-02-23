@@ -1,7 +1,8 @@
 package com.myproject.movie.services.impls;
 
-import com.myproject.movie.dtos.entities.CategoryDTO;
-import com.myproject.movie.dtos.entities.MovieDTO;
+import com.myproject.movie.dtos.commons.CategoryDTO;
+import com.myproject.movie.dtos.commons.MovieDTO;
+import com.myproject.movie.mappers.MovieMapper;
 import com.myproject.movie.models.Category;
 import com.myproject.movie.models.Movie;
 import com.myproject.movie.repositories.CategoryRepository;
@@ -19,71 +20,48 @@ import java.util.stream.Collectors;
 public class MovieServiceImpl implements MovieService {
     private final MovieRepository movieRepository;
     private final CategoryRepository categoryRepository;
+    private final MovieMapper movieMapper;
 
-    public List<Movie> getAllMovies() {
-        return movieRepository.findAll();
+    public List<MovieDTO> getAllMovies() {
+        return movieRepository.findAll().stream()
+                .map(movieMapper::toDTO)
+                .collect(Collectors.toList());
     }
 
-    public List<Movie> getAllMoviesWithCategories() {
-        return movieRepository.findAllMoviesWithCategories();
+    public Optional<MovieDTO> getMovieById(Integer id) {
+        return movieRepository.findById(id)
+                .map(movieMapper::toDTO);
     }
 
-    public Optional<Movie> getMovieById(Long id) {
-        return movieRepository.findById(id);
-    }
-
-    public Movie createMovie(MovieDTO movieDTO) {
+    public MovieDTO createMovie(MovieDTO movieDTO) {
+        Movie movie = movieMapper.toEntity(movieDTO);
         List<Category> categories = categoryRepository.findAllById(
                 movieDTO.getCategories().stream()
-                        .map(CategoryDTO::getCategoryId)
+                        .map(CategoryDTO::getId)
                         .collect(Collectors.toList())
         );
-
-        Movie movie = new Movie();
-        movie.setTitle(movieDTO.getTitle());
-        movie.setDescription(movieDTO.getDescription());
-        movie.setDuration(movieDTO.getDuration());
-        movie.setReleaseDate(movieDTO.getReleaseDate());
-        movie.setDirector(movieDTO.getDirector());
-        movie.setActors(movieDTO.getActors());
-        movie.setLanguage(movieDTO.getLanguage());
-        movie.setSubtitle(movieDTO.getSubtitle());
-        movie.setRating(movieDTO.getRating());
-        movie.setPosterUrl(movieDTO.getPosterUrl());
-        movie.setTrailerUrl(movieDTO.getTrailerUrl());
         movie.setCategories(categories);
 
-        return movieRepository.save(movie);
+        return movieMapper.toDTO(movieRepository.save(movie));
     }
 
-    public Movie updateMovie(Long id, MovieDTO movieDTO) {
-        Movie movie = movieRepository.findById(id).orElse(null);
-        if (movie != null) {
-            movie.setTitle(movieDTO.getTitle());
-            movie.setDescription(movieDTO.getDescription());
-            movie.setDuration(movieDTO.getDuration());
-            movie.setReleaseDate(movieDTO.getReleaseDate());
-            movie.setDirector(movieDTO.getDirector());
-            movie.setActors(movieDTO.getActors());
-            movie.setLanguage(movieDTO.getLanguage());
-            movie.setSubtitle(movieDTO.getSubtitle());
-            movie.setRating(movieDTO.getRating());
-            movie.setPosterUrl(movieDTO.getPosterUrl());
-            movie.setTrailerUrl(movieDTO.getTrailerUrl());
+    public MovieDTO updateMovie(Integer id, MovieDTO movieDTO) {
+        return movieRepository.findById(id).map(existingMovie -> {
+            Movie updatedMovie = movieMapper.toEntity(movieDTO);
+            updatedMovie.setId(id);
 
             List<Category> categories = categoryRepository.findAllById(
                     movieDTO.getCategories().stream()
-                            .map(CategoryDTO::getCategoryId)
+                            .map(CategoryDTO::getId)
                             .collect(Collectors.toList())
             );
-            movie.setCategories(categories);
+            updatedMovie.setCategories(categories);
 
-            return movieRepository.save(movie);
-        }
-        return null;
+            return movieMapper.toDTO(movieRepository.save(updatedMovie));
+        }).orElse(null);
     }
 
-    public void deleteMovie(Long id) {
+    public void deleteMovie(Integer id) {
         movieRepository.deleteById(id);
     }
 }

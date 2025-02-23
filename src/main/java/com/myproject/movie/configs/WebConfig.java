@@ -1,4 +1,4 @@
-package com.myproject.movie.config;
+package com.myproject.movie.configs;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;

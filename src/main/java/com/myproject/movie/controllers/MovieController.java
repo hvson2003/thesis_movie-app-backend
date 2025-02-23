@@ -1,11 +1,9 @@
 package com.myproject.movie.controllers;
 
-import com.myproject.movie.dtos.entities.MovieDTO;
-import com.myproject.movie.models.Movie;
+import com.myproject.movie.dtos.commons.MovieDTO;
 import com.myproject.movie.services.MovieService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,31 +17,32 @@ public class MovieController {
     private MovieService movieService;
 
     @GetMapping
-    public List<Movie> getAllMovies() {
+    public List<MovieDTO> getAllMovies() {
         return movieService.getAllMovies();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Movie> getMovieById(@PathVariable Long id) {
-        Optional<Movie> movie = movieService.getMovieById(id);
-        return movie.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+    public ResponseEntity<MovieDTO> getMovieById(@PathVariable Integer id) {
+        Optional<MovieDTO> movieDTO = movieService.getMovieById(id);
+        return movieDTO.map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
+//    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
-    public Movie createMovie(@RequestBody MovieDTO movieDTO) {
+    public MovieDTO createMovie(@RequestBody MovieDTO movieDTO) {
         return movieService.createMovie(movieDTO);
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
+//    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
-    public Movie updateMovie(@PathVariable Long id, @RequestBody MovieDTO movieDTO) {
+    public MovieDTO updateMovie(@PathVariable Integer id, @RequestBody MovieDTO movieDTO) {
         return movieService.updateMovie(id, movieDTO);
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
+//    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
-    public void deleteMovie(@PathVariable Long id) {
+    public void deleteMovie(@PathVariable Integer id) {
         movieService.deleteMovie(id);
     }
 }

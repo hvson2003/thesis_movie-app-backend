@@ -40,7 +40,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserReadResponseDTO getUserById(Long id) {
+    public UserReadResponseDTO getUserById(Integer id) {
         return userRepository.findById(id)
                 .map(this::convertToUserReadDTO)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + id));
@@ -48,7 +48,7 @@ public class UserServiceImpl implements UserService {
 
     @Transactional
     @Override
-    public UserUpdateResponseDTO updateUser(Long id, UserUpdateResponseDTO userUpdateResponseDTO) {
+    public UserUpdateResponseDTO updateUser(Integer id, UserUpdateResponseDTO userUpdateResponseDTO) {
         User existingUser = userRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + id));
         updateEntity(existingUser, userUpdateResponseDTO);
@@ -58,13 +58,12 @@ public class UserServiceImpl implements UserService {
 
     @Transactional
     @Override
-    public boolean deleteUser(Long id) {
+    public void deleteUser(Integer id) {
         if (!userRepository.existsById(id)) {
             throw new ResourceNotFoundException("User not found with id: " + id);
         }
         userRepository.deleteById(id);
 
-        return true;
     }
 
     private void updateEntity(User user, UserUpdateResponseDTO dto) {

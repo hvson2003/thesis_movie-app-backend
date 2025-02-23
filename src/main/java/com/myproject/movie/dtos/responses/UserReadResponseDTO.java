@@ -6,7 +6,7 @@ import java.time.LocalDateTime;
 
 @Data
 public class UserReadResponseDTO {
-    private Long id;
+    private Integer id;
     private String email;
     private String fullName;
     private String phone;

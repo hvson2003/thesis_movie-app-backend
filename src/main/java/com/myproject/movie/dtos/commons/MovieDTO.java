@@ -1,4 +1,4 @@
-package com.myproject.movie.dtos.entities;
+package com.myproject.movie.dtos.commons;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -9,7 +9,7 @@ import java.util.List;
 
 @Data
 public class MovieDTO {
-    private Long id;
+    private Integer id;
     private String title;
     private String description;
     private Integer duration;
@@ -24,10 +24,8 @@ public class MovieDTO {
     private String subtitle;
     private String rating;
 
-    @JsonProperty("poster_url")
     private String posterUrl;
 
-    @JsonProperty("trailer_url")
     private String trailerUrl;
 
     private List<CategoryDTO> categories;

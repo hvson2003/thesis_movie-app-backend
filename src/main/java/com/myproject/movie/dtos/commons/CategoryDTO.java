@@ -1,4 +1,4 @@
-package com.myproject.movie.dtos.entities;
+package com.myproject.movie.dtos.commons;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
@@ -6,5 +6,6 @@ import lombok.Data;
 @Data
 public class CategoryDTO {
     @JsonProperty("category_id")
-    private Integer categoryId;
+    private Integer id;
+    private String name;
 }

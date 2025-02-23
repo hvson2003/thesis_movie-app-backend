@@ -1,15 +1,14 @@
 package com.myproject.movie.services;
 
-import com.myproject.movie.dtos.entities.MovieDTO;
-import com.myproject.movie.models.Movie;
+import com.myproject.movie.dtos.commons.MovieDTO;
 
 import java.util.List;
 import java.util.Optional;
 
 public interface MovieService {
-    List<Movie> getAllMovies();
-    Optional<Movie> getMovieById(Long id);
-    Movie createMovie(MovieDTO movieDTO);
-    Movie updateMovie(Long id, MovieDTO movieDTO);
-    void deleteMovie(Long id);
+    List<MovieDTO> getAllMovies();
+    Optional<MovieDTO> getMovieById(Integer id);
+    MovieDTO createMovie(MovieDTO movieDTO);
+    MovieDTO updateMovie(Integer id, MovieDTO movieDTO);
+    void deleteMovie(Integer id);
 }

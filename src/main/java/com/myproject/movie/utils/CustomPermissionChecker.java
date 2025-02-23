@@ -16,7 +16,7 @@ public class CustomPermissionChecker {
         this.userRepository = userRepository;
     }
 
-    public boolean hasAccess(Authentication authentication, Long userId) {
+    public boolean hasAccess(Authentication authentication, Integer userId) {
         String email = authentication.getName();
         Optional<User> user = userRepository.findByEmail(email);
 
@@ -27,7 +27,7 @@ public class CustomPermissionChecker {
         return checkUserPermission(userEntity, userId);
     }
 
-    private boolean checkUserPermission(User user, Long userId) {
+    private boolean checkUserPermission(User user, Integer userId) {
         return user.getId().equals(userId);
     }
 }
