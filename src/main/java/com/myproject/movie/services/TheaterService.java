@@ -1,6 +1,6 @@
 package com.myproject.movie.services;
 
-import com.myproject.movie.models.Theater;
+import com.myproject.movie.models.entities.Theater;
 import java.util.List;
 
 public interface TheaterService {

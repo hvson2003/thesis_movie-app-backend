@@ -1,10 +1,10 @@
 package com.myproject.movie.services;
 
-import com.myproject.movie.dtos.requests.AuthRequestDTO;
-import com.myproject.movie.dtos.requests.RegisterRequestDTO;
-import com.myproject.movie.dtos.responses.AuthResponseDTO;
+import com.myproject.movie.models.dtos.requests.AuthRequestDto;
+import com.myproject.movie.models.dtos.requests.UserCreateRequestDto;
+import com.myproject.movie.models.dtos.responses.AuthResponseDto;
 
 public interface AuthService {
-    AuthResponseDTO register(RegisterRequestDTO request);
-    AuthResponseDTO authenticate(AuthRequestDTO request);
+    AuthResponseDto register(UserCreateRequestDto request);
+    AuthResponseDto authenticate(AuthRequestDto request);
 }

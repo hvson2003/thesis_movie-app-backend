@@ -1,42 +1,41 @@
 package com.myproject.movie.controllers;
 
-import com.myproject.movie.dtos.commons.MovieDTO;
+import com.myproject.movie.models.dtos.commons.MovieDto;
 import com.myproject.movie.services.MovieService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
 
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("/movies")
 public class MovieController {
-
-    @Autowired
-    private MovieService movieService;
+    private final MovieService movieService;
 
     @GetMapping
-    public List<MovieDTO> getAllMovies() {
+    public List<MovieDto> getAllMovies() {
         return movieService.getAllMovies();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<MovieDTO> getMovieById(@PathVariable Integer id) {
-        Optional<MovieDTO> movieDTO = movieService.getMovieById(id);
+    public ResponseEntity<MovieDto> getMovieById(@PathVariable Integer id) {
+        Optional<MovieDto> movieDTO = movieService.getMovieById(id);
         return movieDTO.map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
 //    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
-    public MovieDTO createMovie(@RequestBody MovieDTO movieDTO) {
+    public MovieDto createMovie(@RequestBody MovieDto movieDTO) {
         return movieService.createMovie(movieDTO);
     }
 
 //    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
-    public MovieDTO updateMovie(@PathVariable Integer id, @RequestBody MovieDTO movieDTO) {
+    public MovieDto updateMovie(@PathVariable Integer id, @RequestBody MovieDto movieDTO) {
         return movieService.updateMovie(id, movieDTO);
     }
 

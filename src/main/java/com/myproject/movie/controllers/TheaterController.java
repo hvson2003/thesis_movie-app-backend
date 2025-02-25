@@ -1,20 +1,19 @@
 package com.myproject.movie.controllers;
 
-import com.myproject.movie.models.Theater;
+import com.myproject.movie.models.entities.Theater;
 import com.myproject.movie.services.TheaterService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("/theaters")
 public class TheaterController {
-
-    @Autowired
-    private TheaterService theaterService;
+    private final TheaterService theaterService;
 
     @GetMapping
     public ResponseEntity<List<Theater>> getAllTheaters() {

@@ -1,12 +1,13 @@
-package com.myproject.movie.dtos.requests;
+package com.myproject.movie.models.dtos.requests;
 
 import jakarta.validation.constraints.*;
 import lombok.Data;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Data
-public class UserCreateRequestDTO {
+public class UserCreateRequestDto {
     @NotNull(message = "Email không được để trống")
     @Email(message = "Email không đúng định dạng")
     private String email;
@@ -24,6 +25,8 @@ public class UserCreateRequestDTO {
 
     @Past(message = "Ngày sinh phải là một ngày trong quá khứ")
     private LocalDate birthDate;
+
+    private LocalDateTime createdAt = LocalDateTime.now();
 
     private boolean isActive = true;
 }

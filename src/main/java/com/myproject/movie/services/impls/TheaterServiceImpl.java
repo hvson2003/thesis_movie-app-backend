@@ -1,17 +1,18 @@
 package com.myproject.movie.services.impls;
 
-import com.myproject.movie.models.Theater;
+import com.myproject.movie.models.entities.Theater;
 import com.myproject.movie.repositories.TheaterRepository;
 import com.myproject.movie.services.TheaterService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@RequiredArgsConstructor
 @Service
 public class TheaterServiceImpl implements TheaterService {
-    @Autowired
-    private TheaterRepository theaterRepository;
+    private final TheaterRepository theaterRepository;
 
     @Override
     public List<Theater> findAll() {

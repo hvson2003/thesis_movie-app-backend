@@ -1,4 +1,4 @@
-package com.myproject.movie.models;
+package com.myproject.movie.models.entities;
 
 import jakarta.persistence.*;
 import lombok.Data;

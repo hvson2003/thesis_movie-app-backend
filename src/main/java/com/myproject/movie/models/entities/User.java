@@ -1,8 +1,8 @@
-package com.myproject.movie.models;
+package com.myproject.movie.models.entities;
 
+import com.myproject.movie.models.enums.UserRole;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
@@ -15,7 +15,6 @@ import java.util.Collection;
 import java.util.List;
 
 @Data
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
@@ -29,7 +28,7 @@ public class User implements UserDetails {
     private String email;
 
     @Column(nullable = false)
-    private String passwordHash;
+    private String password;
 
     private String fullName;
 
@@ -39,10 +38,10 @@ public class User implements UserDetails {
     private LocalDate birthDate;
 
     @Enumerated(EnumType.STRING)
-    private Role role;
+    private UserRole role;
 
     private LocalDateTime createdAt = LocalDateTime.now();
-    private LocalDateTime lastLogin;
+//    private LocalDateTime lastLogin;
     private boolean isActive = true;
 
 //    @OneToMany(mappedBy = "user")
@@ -60,11 +59,6 @@ public class User implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority("ROLE_" + role.name()));
-    }
-
-    @Override
-    public String getPassword() {
-        return passwordHash;
     }
 
     public String getUsername() {
@@ -89,10 +83,5 @@ public class User implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
-    }
-
-    public enum Role {
-        ADMIN,
-        USER
     }
 }

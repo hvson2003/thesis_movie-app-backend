@@ -1,4 +1,4 @@
-package com.myproject.movie.models;
+package com.myproject.movie.models.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;

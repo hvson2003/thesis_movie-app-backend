@@ -1,6 +1,7 @@
 package com.myproject.movie.utils;
 
-import com.myproject.movie.models.User;
+import com.myproject.movie.models.entities.User;
+import com.myproject.movie.models.enums.UserRole;
 import com.myproject.movie.repositories.UserRepository;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
@@ -22,7 +23,7 @@ public class CustomPermissionChecker {
 
         if (user.isEmpty()) { return false; }
         User userEntity = user.get();
-        if (userEntity.getRole().equals(User.Role.ADMIN)) { return true; }
+        if (userEntity.getRole().equals(UserRole.ADMIN)) { return true; }
 
         return checkUserPermission(userEntity, userId);
     }

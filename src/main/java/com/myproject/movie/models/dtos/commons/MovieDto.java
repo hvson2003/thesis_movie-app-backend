@@ -1,4 +1,4 @@
-package com.myproject.movie.dtos.commons;
+package com.myproject.movie.models.dtos.commons;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
-public class MovieDTO {
+public class MovieDto {
     private Integer id;
     private String title;
     private String description;
@@ -28,5 +28,5 @@ public class MovieDTO {
 
     private String trailerUrl;
 
-    private List<CategoryDTO> categories;
+    private List<CategoryDto> categories;
 }

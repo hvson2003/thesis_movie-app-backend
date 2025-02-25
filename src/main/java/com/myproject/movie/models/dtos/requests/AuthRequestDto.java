@@ -1,15 +1,13 @@
-package com.myproject.movie.dtos.requests;
+package com.myproject.movie.models.dtos.requests;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class AuthRequestDTO {
+public class AuthRequestDto {
     private String email;
     private String password;
 }

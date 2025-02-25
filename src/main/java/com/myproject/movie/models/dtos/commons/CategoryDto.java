@@ -1,10 +1,10 @@
-package com.myproject.movie.dtos.commons;
+package com.myproject.movie.models.dtos.commons;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 @Data
-public class CategoryDTO {
+public class CategoryDto {
     @JsonProperty("category_id")
     private Integer id;
     private String name;

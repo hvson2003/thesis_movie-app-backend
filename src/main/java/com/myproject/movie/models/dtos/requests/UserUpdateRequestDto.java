@@ -1,11 +1,11 @@
-package com.myproject.movie.dtos.responses;
+package com.myproject.movie.models.dtos.requests;
 
 import jakarta.validation.constraints.*;
 import lombok.Data;
 import java.time.LocalDate;
 
 @Data
-public class UserUpdateResponseDTO {
+public class UserUpdateRequestDto {
     @Email(message = "Email không đúng định dạng")
     private String email;
 
