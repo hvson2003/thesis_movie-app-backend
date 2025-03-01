@@ -1,7 +1,10 @@
 package com.myproject.movie.models.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
+
+import java.util.List;
 
 @Data
 @Entity
@@ -13,6 +16,7 @@ public class Room {
 
     @ManyToOne
     @JoinColumn(name = "theater_id", nullable = false)
+    @JsonIgnore
     private Theater theater;
 
     @Column(nullable = false)
@@ -24,7 +28,7 @@ public class Room {
 
 //    @OneToMany(mappedBy = "room")
 //    private List<Seat> seats;
-//
-//    @OneToMany(mappedBy = "room")
-//    private List<Screening> screenings;
+
+    @OneToMany(mappedBy = "room")
+    private List<Screening> screenings;
 }

@@ -3,10 +3,12 @@ package com.myproject.movie.controllers;
 import com.myproject.movie.models.entities.Theater;
 import com.myproject.movie.services.TheaterService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -26,6 +28,17 @@ public class TheaterController {
         return ResponseEntity.ok(theater);
     }
 
+    @GetMapping("/movie/{movieId}/city/{cityId}/brand/{brandId}/date")
+    public ResponseEntity<List<Theater>> getTheatersByMovieCityBrandAndDate(
+            @PathVariable Integer movieId,
+            @PathVariable Integer cityId,
+            @PathVariable Integer brandId,
+            @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date) {
+
+        List<Theater> theaters = theaterService.getTheatersByMovieCityBrandAndDate(movieId, cityId, brandId, date);
+        return ResponseEntity.ok(theaters);
+    }
+
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public ResponseEntity<Theater> createTheater(@RequestBody Theater theater) {
@@ -42,16 +55,6 @@ public class TheaterController {
     ) {
         Theater updated = theaterService.saveOrUpdate(id, updatedTheater);
         return ResponseEntity.ok(updated);
-    }
-
-    @PreAuthorize("hasRole('ADMIN')")
-    @PatchMapping("/{id}")
-    public ResponseEntity<Theater> updateTheaterPartial(
-            @PathVariable Integer id,
-            @RequestBody Theater updatedData
-    ) {
-        Theater updatedTheater = theaterService.updatePartialTheaterById(id, updatedData);
-        return ResponseEntity.ok(updatedTheater);
     }
 
     @PreAuthorize("hasRole('ADMIN')")

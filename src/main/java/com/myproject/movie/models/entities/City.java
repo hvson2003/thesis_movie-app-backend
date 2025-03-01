@@ -13,7 +13,4 @@ public class City {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private String name;
-
-    @OneToMany(mappedBy = "city")
-    private List<Brand> brands;
 }
