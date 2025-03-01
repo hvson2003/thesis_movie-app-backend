@@ -29,6 +29,6 @@ public class Room {
 //    @OneToMany(mappedBy = "room")
 //    private List<Seat> seats;
 
-    @OneToMany(mappedBy = "room")
+    @OneToMany(mappedBy = "room", fetch = FetchType.LAZY)
     private List<Screening> screenings;
 }

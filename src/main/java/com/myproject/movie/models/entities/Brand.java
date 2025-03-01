@@ -18,10 +18,6 @@ public class Brand {
     private String logo;
     private String description;
 
-    @ManyToOne
-    @JoinColumn(name = "city_id")
-    private City city;
-
     @OneToMany(mappedBy = "brand")
     @JsonIgnore
     private List<Theater> theaters;

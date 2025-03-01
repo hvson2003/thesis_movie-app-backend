@@ -8,6 +8,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -25,14 +27,25 @@ public class TheaterServiceImpl implements TheaterService {
 
     @Override
     public List<Theater> getTheatersByMovieCityBrandAndDate(Integer movieId, Integer cityId, Integer brandId, LocalDate date) {
-        List<Theater> theaters = theaterRepository.findByBrandIdAndCityIdAndRoomsScreeningsMovieId(brandId, cityId, movieId);
+        LocalDateTime startOfDay = date.atStartOfDay();
+        LocalDateTime endOfDay = date.atTime(LocalTime.MAX);
 
-        return theaters.stream()
-                .filter(theater -> theater.getRooms().stream()
-                        .flatMap(room -> room.getScreenings().stream())
-                        .anyMatch(screening -> screening.getStartTime().toLocalDate().equals(date)))
-                .collect(Collectors.toList());
+        List<Theater> theaters = theaterRepository.findByBrandIdAndCityIdAndRoomsScreeningsMovieIdAndRoomsScreeningsStartTimeBetween(
+                brandId, cityId, movieId, startOfDay, endOfDay);
+
+        theaters.forEach(theater -> {
+            theater.getRooms().forEach(room -> {
+                room.setScreenings(
+                        room.getScreenings().stream()
+                                .filter(screening -> !screening.getStartTime().isBefore(startOfDay) && !screening.getStartTime().isAfter(endOfDay))
+                                .collect(Collectors.toList())
+                );
+            });
+        });
+
+        return theaters;
     }
+
 
     @Override
     public Theater saveOrUpdate(Integer theater_id, Theater newTheater) {
