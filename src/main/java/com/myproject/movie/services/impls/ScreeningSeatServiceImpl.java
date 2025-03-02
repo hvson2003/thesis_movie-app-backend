@@ -3,8 +3,10 @@ package com.myproject.movie.services.impls;
 import com.myproject.movie.mappers.SeatScreeningMapper;
 import com.myproject.movie.models.dtos.commons.ScreeningSeatDto;
 import com.myproject.movie.models.entities.ScreeningSeat;
+import com.myproject.movie.models.enums.SeatStatus;
 import com.myproject.movie.repositories.ScreeningSeatRepository;
 import com.myproject.movie.services.ScreeningSeatService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -25,5 +27,19 @@ public class ScreeningSeatServiceImpl implements ScreeningSeatService {
                     .comparing(ScreeningSeatDto::getRow)
                         .thenComparing(dto -> Integer.parseInt(dto.getSeatNumber())))
                 .collect(Collectors.toList());
+    }
+
+    @Transactional
+    public void bookSeats(Integer screeningId, List<Integer> seatIds) {
+        List<ScreeningSeat> seats = screeningSeatRepository.findByScreeningId(screeningId);
+        for (ScreeningSeat seat : seats) {
+            if (seatIds.contains(seat.getId())) {
+                if (seat.getStatus() != SeatStatus.AVAILABLE) {
+                    throw new RuntimeException("Ghế " + seat.getSeat().getRow() + seat.getSeat().getSeatNumber() + " không khả dụng");
+                }
+                seat.setStatus(SeatStatus.RESERVED);
+                screeningSeatRepository.save(seat);
+            }
+        }
     }
 }

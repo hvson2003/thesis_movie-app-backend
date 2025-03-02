@@ -1,13 +1,11 @@
 package com.myproject.movie.controllers;
 
 import com.myproject.movie.models.dtos.commons.ScreeningSeatDto;
+import com.myproject.movie.models.dtos.requests.BookSeatsRequestDto;
 import com.myproject.movie.services.ScreeningSeatService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -24,5 +22,18 @@ public class ScreeningSeatController {
             return ResponseEntity.noContent().build();
         }
         return ResponseEntity.ok(seats);
+    }
+
+    @PostMapping("/{screeningId}/book")
+    public ResponseEntity<String> bookSeats(
+            @PathVariable Integer screeningId,
+            @RequestBody BookSeatsRequestDto request
+    ) {
+        try {
+            screeningSeatService.bookSeats(screeningId, request.getSeatIds());
+            return ResponseEntity.ok("Đặt vé thành công");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Lỗi: " + e.getMessage());
+        }
     }
 }
