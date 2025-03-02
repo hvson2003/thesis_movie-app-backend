@@ -1,28 +1,33 @@
 package com.myproject.movie.models.entities;
 
+import com.myproject.movie.models.enums.SeatStatus;
 import jakarta.persistence.*;
 import lombok.Data;
 
-@Data
 @Entity
 @Table(name = "screening_seats")
+@Data
 public class ScreeningSeat {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @ManyToOne
-    @JoinColumn(name = "screening_id", nullable = false)
-    private Screening screening;
+    @Column(name = "screening_id", nullable = false)
+    private Integer screeningId;
 
-    @ManyToOne
-    @JoinColumn(name = "seat_id", nullable = false)
-    private Seat seat;
+    @Column(name = "seat_id", nullable = false)
+    private Integer seatId;
 
-    private String status = "available";
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status", nullable = false)
+    private SeatStatus status = SeatStatus.AVAILABLE;
+
+    @Column(name = "price", nullable = false)
     private Float price;
 
-//    @OneToMany(mappedBy = "screeningSeat")
-//    private List<BookingSeat> bookings;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "seat_id", insertable = false, updatable = false)
+    private Seat seat;
 }
+
 

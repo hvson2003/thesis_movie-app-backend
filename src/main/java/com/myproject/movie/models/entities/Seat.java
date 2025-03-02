@@ -3,25 +3,26 @@ package com.myproject.movie.models.entities;
 import jakarta.persistence.*;
 import lombok.Data;
 
-@Data
 @Entity
 @Table(name = "seats")
+@Data
 public class Seat {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @ManyToOne
-    @JoinColumn(name = "room_id", nullable = false)
-    private Room room;
+    @Column(name = "room_id", nullable = false)
+    private Integer roomId;
 
-    @Column(nullable = false)
+    @Column(name = "seat_number", nullable = false)
     private String seatNumber;
 
+    @Column(name = "row")
     private String row;
+
+    @Column(name = "seat_type", nullable = false)
     private String seatType = "standard";
+
+    @Column(name = "is_active", nullable = false)
     private Boolean isActive = true;
-//
-//    @OneToMany(mappedBy = "seat")
-//    private List<ScreeningSeat> screeningSeats;
 }

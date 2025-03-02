@@ -11,9 +11,9 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDate;
 import java.util.List;
 
-@RequiredArgsConstructor
 @RestController
 @RequestMapping("/theaters")
+@RequiredArgsConstructor
 public class TheaterController {
     private final TheaterService theaterService;
 
@@ -28,7 +28,7 @@ public class TheaterController {
         return ResponseEntity.ok(theater);
     }
 
-    @GetMapping("/movie/{movieId}/city/{cityId}/brand/{brandId}/date")
+    @GetMapping("/movie/{movieId}/city/{cityId}/brand/{brandId}")
     public ResponseEntity<List<Theater>> getTheatersByMovieCityBrandAndDate(
             @PathVariable Integer movieId,
             @PathVariable Integer cityId,
