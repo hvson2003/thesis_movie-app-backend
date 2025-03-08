@@ -33,6 +33,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public User getUserEntityById(Integer userId) {
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+    }
+
+    @Override
     public UserReadResponseDto getUserById(Integer id) {
         return userRepository.findById(id)
                 .map(userMapper::entityToUserReadResponseDto)

@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,7 +21,7 @@ import java.util.List;
 public class UserController {
     private final UserService userService;
 
-//    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping
     public ResponseEntity<List<UserReadResponseDto>> getAllUsers() {
         log.info("Fetching all users");
@@ -28,7 +29,7 @@ public class UserController {
         return ResponseEntity.ok(userService.getAllUsers());
     }
 
-//    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     @GetMapping("/{id}")
     public ResponseEntity<UserReadResponseDto> getUserById(@PathVariable Integer id) {
         log.info("Fetching user with ID: {}", id);
@@ -36,7 +37,7 @@ public class UserController {
         return ResponseEntity.ok(userService.getUserById(id));
     }
 
-//    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     @PostMapping
     public ResponseEntity<UserCreateRequestDto> createUser(@Valid @RequestBody UserCreateRequestDto userCreateRequestDTO) {
         log.info("Creating new user: {}", userCreateRequestDTO.getEmail());
@@ -46,7 +47,7 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.CREATED).body(createdUser);
     }
 
-//    @PreAuthorize("hasAnyRole('USER', 'ADMIN') and @customPermissionChecker.hasAccess(authentication, #id)")
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN') and @customPermissionChecker.hasAccess(authentication, #id)")
     @PutMapping("/{id}")
     public ResponseEntity<UserUpdateRequestDto> updateUser(@PathVariable Integer id, @RequestBody UserUpdateRequestDto userUpdateRequestDTO) {
         log.info("Updating user with ID: {}", id);
@@ -55,7 +56,7 @@ public class UserController {
 
         return ResponseEntity.ok(updatedUser);    }
 
-//    @PreAuthorize("hasAnyRole('USER', 'ADMIN') and @customPermissionChecker.hasAccess(authentication, #id)")
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN') and @customPermissionChecker.hasAccess(authentication, #id)")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteUser(@PathVariable Integer id) {
         log.info("Deleting user with ID: {}", id);
