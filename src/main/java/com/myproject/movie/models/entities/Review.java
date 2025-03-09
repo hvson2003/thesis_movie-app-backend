@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 public class Review {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
@@ -21,7 +21,7 @@ public class Review {
     @JoinColumn(name = "movie_id", nullable = false)
     private Movie movie;
 
-    private Integer rating;
+    private Long rating;
     private String comment;
     private LocalDateTime createdAt = LocalDateTime.now();
     private String isApproved;

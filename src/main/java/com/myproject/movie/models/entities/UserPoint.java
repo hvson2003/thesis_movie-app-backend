@@ -11,13 +11,13 @@ import java.time.LocalDateTime;
 public class UserPoint {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer pointId;
+    private Long pointId;
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    private Integer points;
+    private Long points;
     private String type;
     private LocalDateTime earnedDate = LocalDateTime.now();
     private LocalDateTime expiryDate;

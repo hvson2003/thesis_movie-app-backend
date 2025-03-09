@@ -8,25 +8,21 @@ import java.time.LocalDateTime;
 
 @Data
 public class UserCreateRequestDto {
-    @NotNull(message = "Email không được để trống")
-    @Email(message = "Email không đúng định dạng")
+    @NotBlank(message = "Email is required")
+    @Email(message = "Invalid email format")
     private String email;
 
-    @NotNull(message = "Password không được để trống")
-    @Size(min = 6, message = "Password phải chứa ít nhất 6 ký tự")
+    @NotBlank(message = "Password is required")
+    @Size(min = 6, message = "Password must be at least 6 characters")
     private String password;
 
-    @Size(max = 50, message = "Họ và tên không được dài quá 50 ký tự")
+    @Size(max = 50, message = "Full name must not exceed 50 characters")
     private String fullName;
 
-    @NotNull(message = "Số điện thoại không được để trống")
-    @Pattern(regexp = "^\\+?[0-9]{10,15}$", message = "Số điện thoại không hợp lệ")
+    @NotBlank(message = "Phone number is required")
+    @Pattern(regexp = "^\\+?[0-9]{10,15}$", message = "Invalid phone number format")
     private String phone;
 
-    @Past(message = "Ngày sinh phải là một ngày trong quá khứ")
+    @Past(message = "Birth date must be in the past")
     private LocalDate birthDate;
-
-    private LocalDateTime createdAt = LocalDateTime.now();
-
-    private boolean isActive = true;
 }

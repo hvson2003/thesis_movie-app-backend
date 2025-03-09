@@ -39,10 +39,10 @@ public class JwtServiceImpl implements JwtService {
                 .compact();
     }
 
-    public Integer extractUserId(String token) {
+    public Long extractUserId(String token) {
         try {
             Claims claims = extractAllClaims(token);
-            return claims.get("userId", Integer.class);
+            return claims.get("userId", Long.class);
         } catch (Exception e) {
             throw new RuntimeException("Invalid token: " + e.getMessage());
         }

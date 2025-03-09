@@ -6,8 +6,8 @@ import lombok.Data;
 
 @Data
 public class PaymentResponseDto {
-    private Integer id;
-    private Integer bookingId;
+    private Long id;
+    private Long bookingId;
     private Float amount;
     private PaymentMethod paymentMethod;
     private PaymentStatus status;

@@ -9,7 +9,7 @@ import lombok.Data;
 public class BookingSeat {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
 
     @ManyToOne
     @JoinColumn(name = "booking_id", nullable = false)

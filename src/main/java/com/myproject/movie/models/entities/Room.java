@@ -12,7 +12,7 @@ import java.util.List;
 public class Room {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
 
     @ManyToOne
     @JoinColumn(name = "theater_id", nullable = false)
@@ -22,7 +22,7 @@ public class Room {
     @Column(nullable = false)
     private String name;
 
-    private Integer capacity;
+    private Long capacity;
     private String roomType;
     private Boolean isActive = true;
 

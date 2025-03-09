@@ -4,5 +4,5 @@ import com.myproject.movie.models.dtos.responses.PaymentResponseDto;
 import com.myproject.movie.models.enums.PaymentMethod;
 
 public interface PaymentService {
-    PaymentResponseDto initiatePayment(Integer bookingId, PaymentMethod paymentMethod);
+    PaymentResponseDto initiatePayment(Long bookingId, PaymentMethod paymentMethod);
 }

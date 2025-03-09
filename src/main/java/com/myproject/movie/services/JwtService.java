@@ -10,7 +10,7 @@ public interface JwtService {
     String generateToken(User user);
     String generateToken(Map<String, Object> extraClaims, User user);
     String extractUsername(String token);
-    Integer extractUserId(String token);
+    Long extractUserId(String token);
     <T> T extractClaim(String token, Function<Claims, T> claimsResolver);
     boolean isTokenValid(String token, User user);
     Claims extractAllClaims(String token);

@@ -2,6 +2,7 @@ package com.myproject.movie.controllers;
 
 import com.myproject.movie.models.entities.Theater;
 import com.myproject.movie.services.TheaterService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
@@ -19,29 +20,32 @@ public class TheaterController {
 
     @GetMapping
     public ResponseEntity<List<Theater>> getAllTheaters() {
-        return ResponseEntity.ok(theaterService.findAll());
+        List<Theater> theaters = theaterService.findAll();
+
+        return ResponseEntity.ok(theaters);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Theater> getTheaterById(@PathVariable Integer id) {
+    public ResponseEntity<Theater> getTheaterById(@PathVariable Long id) {
         Theater theater = theaterService.findById(id);
+
         return ResponseEntity.ok(theater);
     }
 
     @GetMapping("/movie/{movieId}/city/{cityId}/brand/{brandId}")
     public ResponseEntity<List<Theater>> getTheatersByMovieCityBrandAndDate(
-            @PathVariable Integer movieId,
-            @PathVariable Integer cityId,
-            @PathVariable Integer brandId,
+            @PathVariable Long movieId,
+            @PathVariable Long cityId,
+            @PathVariable Long brandId,
             @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date) {
-
         List<Theater> theaters = theaterService.getTheatersByMovieCityBrandAndDate(movieId, cityId, brandId, date);
+
         return ResponseEntity.ok(theaters);
     }
 
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
-    public ResponseEntity<Theater> createTheater(@RequestBody Theater theater) {
+    public ResponseEntity<Theater> createTheater(@Valid @RequestBody Theater theater) {
         Theater savedTheater = theaterService.saveOrUpdate(null, theater);
 
         return ResponseEntity.ok(savedTheater);
@@ -50,17 +54,18 @@ public class TheaterController {
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
     public ResponseEntity<Theater> updateTheater(
-            @PathVariable Integer id,
-            @RequestBody Theater updatedTheater
-    ) {
-        Theater updated = theaterService.saveOrUpdate(id, updatedTheater);
-        return ResponseEntity.ok(updated);
+            @PathVariable Long id,
+            @Valid @RequestBody Theater theater) {
+        Theater updatedTheater = theaterService.saveOrUpdate(id, theater);
+
+        return ResponseEntity.ok(updatedTheater);
     }
 
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteTheater(@PathVariable Integer id) {
+    public ResponseEntity<Void> deleteTheater(@PathVariable Long id) {
         theaterService.deleteById(id);
+
         return ResponseEntity.noContent().build();
     }
 }

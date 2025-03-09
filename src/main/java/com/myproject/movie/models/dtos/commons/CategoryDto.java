@@ -1,11 +1,14 @@
 package com.myproject.movie.models.dtos.commons;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
 @Data
 public class CategoryDto {
     @JsonProperty("category_id")
-    private Integer id;
+    private Long id;
+
+    @NotBlank(message = "Category name is required")
     private String name;
 }

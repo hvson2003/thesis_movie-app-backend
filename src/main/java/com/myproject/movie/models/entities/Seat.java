@@ -9,10 +9,10 @@ import lombok.Data;
 public class Seat {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
 
     @Column(name = "room_id", nullable = false)
-    private Integer roomId;
+    private Long roomId;
 
     @Column(name = "seat_number", nullable = false)
     private String seatNumber;

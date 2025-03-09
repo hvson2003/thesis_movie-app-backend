@@ -22,13 +22,9 @@ public class PaymentController {
 
     @PostMapping("/book-and-pay")
     public ResponseEntity<PaymentResponseDto> bookAndPay(@Valid @RequestBody BookingRequest request) {
-        try {
-            Booking booking = bookingService.bookSeats(request.getScreeningId(), request.getSeatIds(), request.getUserId());
-            PaymentResponseDto payment = paymentService.initiatePayment(booking.getId(), request.getPaymentMethod());
+        Booking booking = bookingService.bookSeats(request.getScreeningId(), request.getSeatIds(), request.getUserId());
+        PaymentResponseDto paymentResponse = paymentService.initiatePayment(booking.getId(), request.getPaymentMethod());
 
-            return ResponseEntity.ok(payment);
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(new PaymentResponseDto());
-        }
+        return ResponseEntity.ok(paymentResponse);
     }
 }

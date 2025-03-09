@@ -13,7 +13,7 @@ import java.util.List;
 public class Booking {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
@@ -34,10 +34,10 @@ public class Booking {
     private Float totalAmount;
 
     @Column(nullable = false)
-    private Integer pointsUsed = 0;
+    private Long pointsUsed = 0L;
 
     @Column(nullable = false)
-    private Integer pointsEarned = 0;
+    private Long pointsEarned = 0L;
 
     @OneToMany(mappedBy = "booking")
     private List<BookingSeat> bookingSeats;

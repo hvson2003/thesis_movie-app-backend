@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.time.LocalDateTime;
 import java.util.List;
 
-public interface TheaterRepository extends JpaRepository<Theater, Integer> {
+public interface TheaterRepository extends JpaRepository<Theater, Long> {
     List<Theater> findByBrandIdAndCityIdAndRoomsScreeningsMovieIdAndRoomsScreeningsStartTimeBetween(
-            Integer brandId, Integer cityId, Integer movieId, LocalDateTime startOfDay, LocalDateTime endOfDay);
+            Long brandId, Long cityId, Long movieId, LocalDateTime startOfDay, LocalDateTime endOfDay);
 }

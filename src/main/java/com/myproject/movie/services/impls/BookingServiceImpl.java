@@ -9,7 +9,7 @@ import com.myproject.movie.repositories.BookingRepository;
 import com.myproject.movie.repositories.ScreeningRepository;
 import com.myproject.movie.repositories.UserRepository;
 import com.myproject.movie.services.BookingService;
-import com.myproject.movie.services.ScreeningSeatService;
+import com.myproject.movie.services.ScreeningService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,16 +19,16 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class BookingServiceImpl implements BookingService {
-    private final ScreeningSeatService screeningSeatService;
+    private final ScreeningService screeningService;
     private final BookingRepository bookingRepository;
     private final ScreeningRepository screeningRepository;
     private final UserRepository userRepository;
 
     @Transactional
     @Override
-    public Booking bookSeats(Integer screeningId, List<Integer> seatIds, Integer userId) {
+    public Booking bookSeats(Long screeningId, List<Long> seatIds, Long userId) {
         try {
-            screeningSeatService.bookSeats(screeningId, seatIds);
+            screeningService.bookSeats(screeningId, seatIds);
         } catch (RuntimeException e) {
             throw new RuntimeException("Failed to reserve seats: " + e.getMessage());
         }
@@ -51,8 +51,8 @@ public class BookingServiceImpl implements BookingService {
         return bookingRepository.save(booking);
     }
 
-    private Float calculateTotalAmount(Integer screeningId, List<Integer> seatIds) {
-        return (float) screeningSeatService.getSeatsByScreeningId(screeningId).stream()
+    private Float calculateTotalAmount(Long screeningId, List<Long> seatIds) {
+        return (float) screeningService.getSeatsByScreeningId(screeningId).stream()
                 .filter(seat -> seatIds.contains(seat.getId()))
                 .mapToDouble(ScreeningSeatDto::getPrice)
                 .sum();

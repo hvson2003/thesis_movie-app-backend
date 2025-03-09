@@ -14,10 +14,10 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@RequiredArgsConstructor
-@Slf4j
 @RestController
 @RequestMapping("/users")
+@RequiredArgsConstructor
+@Slf4j
 public class UserController {
     private final UserService userService;
 
@@ -25,40 +25,45 @@ public class UserController {
     @GetMapping
     public ResponseEntity<List<UserReadResponseDto>> getAllUsers() {
         log.info("Fetching all users");
+        List<UserReadResponseDto> users = userService.getAllUsers();
 
-        return ResponseEntity.ok(userService.getAllUsers());
+        return ResponseEntity.ok(users);
     }
 
     @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     @GetMapping("/{id}")
-    public ResponseEntity<UserReadResponseDto> getUserById(@PathVariable Integer id) {
+    public ResponseEntity<UserReadResponseDto> getUserById(@PathVariable Long id) {
         log.info("Fetching user with ID: {}", id);
+        UserReadResponseDto user = userService.getUserById(id);
 
-        return ResponseEntity.ok(userService.getUserById(id));
+        return ResponseEntity.ok(user);
     }
 
     @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     @PostMapping
-    public ResponseEntity<UserCreateRequestDto> createUser(@Valid @RequestBody UserCreateRequestDto userCreateRequestDTO) {
-        log.info("Creating new user: {}", userCreateRequestDTO.getEmail());
-        UserCreateRequestDto createdUser = userService.createUser(userCreateRequestDTO);
-        log.info("User created successfully: {}", createdUser.getEmail());
+    public ResponseEntity<UserCreateRequestDto> createUser(@Valid @RequestBody UserCreateRequestDto userCreateRequestDto) {
+        log.info("Creating new user with email: {}", userCreateRequestDto.getEmail());
+        UserCreateRequestDto createdUser = userService.createUser(userCreateRequestDto);
+        log.info("User created successfully with email: {}", createdUser.getEmail());
 
         return ResponseEntity.status(HttpStatus.CREATED).body(createdUser);
     }
 
     @PreAuthorize("hasAnyRole('USER', 'ADMIN') and @customPermissionChecker.hasAccess(authentication, #id)")
     @PutMapping("/{id}")
-    public ResponseEntity<UserUpdateRequestDto> updateUser(@PathVariable Integer id, @RequestBody UserUpdateRequestDto userUpdateRequestDTO) {
+    public ResponseEntity<UserUpdateRequestDto> updateUser(
+            @PathVariable Long id,
+            @Valid @RequestBody UserUpdateRequestDto userUpdateRequestDto) {
         log.info("Updating user with ID: {}", id);
-        UserUpdateRequestDto updatedUser = userService.updateUser(id, userUpdateRequestDTO);
+        UserUpdateRequestDto updatedUser = userService.updateUser(id, userUpdateRequestDto);
         log.info("User with ID {} updated successfully", id);
 
-        return ResponseEntity.ok(updatedUser);    }
+        return ResponseEntity.ok(updatedUser);
+    }
 
     @PreAuthorize("hasAnyRole('USER', 'ADMIN') and @customPermissionChecker.hasAccess(authentication, #id)")
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteUser(@PathVariable Integer id) {
+    public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
         log.info("Deleting user with ID: {}", id);
         userService.deleteUser(id);
         log.info("User with ID {} deleted successfully", id);

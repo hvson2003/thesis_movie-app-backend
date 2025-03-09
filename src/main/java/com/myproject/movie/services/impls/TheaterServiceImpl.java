@@ -1,70 +1,82 @@
 package com.myproject.movie.services.impls;
 
-import com.myproject.movie.mappers.TheaterMapper;
 import com.myproject.movie.models.entities.Theater;
 import com.myproject.movie.repositories.TheaterRepository;
 import com.myproject.movie.services.TheaterService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
-@RequiredArgsConstructor
 @Service
+@RequiredArgsConstructor
+@Slf4j
 public class TheaterServiceImpl implements TheaterService {
     private final TheaterRepository theaterRepository;
-    private final TheaterMapper theaterMapper;
 
     @Override
     public List<Theater> findAll() {
-        return theaterRepository.findAll();
+        log.info("Fetching all theaters");
+        List<Theater> theaters = theaterRepository.findAll();
+        log.debug("Retrieved {} theaters", theaters.size());
+
+        return theaters;
     }
 
     @Override
-    public List<Theater> getTheatersByMovieCityBrandAndDate(Integer movieId, Integer cityId, Integer brandId, LocalDate date) {
+    public Theater findById(Long id) {
+        log.info("Fetching theater with id: {}", id);
+
+        return theaterRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Theater not found with id: " + id));
+    }
+
+    @Override
+    public List<Theater> getTheatersByMovieCityBrandAndDate(Long movieId, Long cityId, Long brandId, LocalDate date) {
+        log.info("Fetching theaters for movieId: {}, cityId: {}, brandId: {}, date: {}", movieId, cityId, brandId, date);
         LocalDateTime startOfDay = date.atStartOfDay();
         LocalDateTime endOfDay = date.atTime(LocalTime.MAX);
 
         List<Theater> theaters = theaterRepository.findByBrandIdAndCityIdAndRoomsScreeningsMovieIdAndRoomsScreeningsStartTimeBetween(
                 brandId, cityId, movieId, startOfDay, endOfDay);
 
-        theaters.forEach(theater -> {
-            theater.getRooms().forEach(room -> {
-                room.setScreenings(
-                        room.getScreenings().stream()
-                                .filter(screening -> !screening.getStartTime().isBefore(startOfDay) && !screening.getStartTime().isAfter(endOfDay))
-                                .collect(Collectors.toList())
-                );
-            });
-        });
+        theaters.forEach(theater -> theater.getRooms().forEach(room ->
+                room.setScreenings(room.getScreenings().stream()
+                        .filter(screening -> !screening.getStartTime().isBefore(startOfDay) &&
+                                !screening.getStartTime().isAfter(endOfDay))
+                        .toList())
+        ));
 
+        log.debug("Retrieved {} theaters", theaters.size());
         return theaters;
     }
 
-
     @Override
-    public Theater saveOrUpdate(Integer theater_id, Theater newTheater) {
-        Theater existingTheater = findById(theater_id);
-        newTheater.setId(theater_id);
+    @Transactional
+    public Theater saveOrUpdate(Long id, Theater theater) {
+        log.info("Saving or updating theater with id: {}", id);
+        if (id != null) {
+            if (!theaterRepository.existsById(id)) {
+                throw new IllegalArgumentException("Theater not found with id: " + id);
+            }
+            theater.setId(id); // Đảm bảo ID được gán đúng khi cập nhật
+        }
 
-        return theaterRepository.save(newTheater);
+        return theaterRepository.save(theater);
     }
 
     @Override
-    public void deleteById(Integer theater_id) {
-        Theater existingTheater = findById(theater_id);
-
-        theaterRepository.delete(existingTheater);
-    }
-
-    @Override
-    public Theater findById(Integer theater_id) {
-        return theaterRepository.findById(theater_id)
-                .orElseThrow(() -> new RuntimeException("Theater not found with id: " + theater_id));
+    @Transactional
+    public void deleteById(Long id) {
+        log.info("Deleting theater with id: {}", id);
+        if (!theaterRepository.existsById(id)) {
+            throw new IllegalArgumentException("Theater not found with id: " + id);
+        }
+        theaterRepository.deleteById(id);
     }
 }

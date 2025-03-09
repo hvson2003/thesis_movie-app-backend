@@ -10,13 +10,13 @@ import lombok.Data;
 public class ScreeningSeat {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
 
     @Column(name = "screening_id", nullable = false)
-    private Integer screeningId;
+    private Long screeningId;
 
     @Column(name = "seat_id", nullable = false)
-    private Integer seatId;
+    private Long seatId;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
