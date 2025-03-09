@@ -1,5 +1,6 @@
 package com.myproject.movie.models.entities;
 
+import com.myproject.movie.models.enums.BookingStatus;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -22,10 +23,20 @@ public class Booking {
     @JoinColumn(name = "screening_id", nullable = false)
     private Screening screening;
 
-    private LocalDateTime bookingTime = LocalDateTime.now();
-    private String status = "pending";
+    @Column(nullable = false)
+    private LocalDateTime bookingTime;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private BookingStatus status = BookingStatus.PENDING;
+
+    @Column(nullable = false)
     private Float totalAmount;
+
+    @Column(nullable = false)
     private Integer pointsUsed = 0;
+
+    @Column(nullable = false)
     private Integer pointsEarned = 0;
 
     @OneToMany(mappedBy = "booking")
@@ -33,4 +44,9 @@ public class Booking {
 
     @OneToMany(mappedBy = "booking")
     private List<Payment> payments;
+
+    @PrePersist
+    public void prePersist() {
+        this.bookingTime = LocalDateTime.now();
+    }
 }

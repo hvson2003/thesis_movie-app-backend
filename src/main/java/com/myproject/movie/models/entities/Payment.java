@@ -1,5 +1,7 @@
 package com.myproject.movie.models.entities;
 
+import com.myproject.movie.models.enums.PaymentMethod;
+import com.myproject.movie.models.enums.PaymentStatus;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -21,9 +23,29 @@ public class Payment {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
+    @Column(nullable = false)
     private Float amount;
-    private String paymentMethod;
-    private String status = "pending";
-    private LocalDateTime paymentTime = LocalDateTime.now();
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private PaymentMethod paymentMethod;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private PaymentStatus status = PaymentStatus.PENDING;
+
+    @Column(nullable = false)
+    private LocalDateTime paymentTime;
+
+    @Column(unique = true)
     private String transactionId;
+
+    private String paymentGateway;
+    private String qrCodeUrl;
+    private String clientSecret;
+
+    @PrePersist
+    public void prePersist() {
+        this.paymentTime = LocalDateTime.now();
+    }
 }

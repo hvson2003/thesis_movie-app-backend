@@ -112,6 +112,13 @@
 			<artifactId>mapstruct</artifactId>
 			<version>1.5.5.Final</version>
 		</dependency>
+
+		<!-- Stripe -->
+		<dependency>
+			<groupId>com.stripe</groupId>
+			<artifactId>stripe-java</artifactId>
+			<version>20.128.0</version>
+		</dependency>
 	</dependencies>
 
 	<build>

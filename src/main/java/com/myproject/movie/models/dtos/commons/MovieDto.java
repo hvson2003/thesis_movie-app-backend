@@ -1,7 +1,5 @@
 package com.myproject.movie.models.dtos.commons;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 import java.time.LocalDateTime;
@@ -14,8 +12,7 @@ public class MovieDto {
     private String description;
     private Integer duration;
 
-    @JsonProperty("release_date")
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+//    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime releaseDate;
 
     private String director;
