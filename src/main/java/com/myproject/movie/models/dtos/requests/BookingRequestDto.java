@@ -8,12 +8,12 @@ import lombok.Data;
 import java.util.List;
 
 @Data
-public class BookingRequest {
+public class BookingRequestDto {
     @NotNull(message = "Screening ID is required")
     private Long screeningId;
 
-    @NotEmpty(message = "Seat IDs cannot be empty")
-    private List<Long> seatIds;
+    @NotEmpty(message = "Screening seat IDs cannot be empty")
+    private List<Long> screeningSeatIds;
 
     @NotNull(message = "User ID is required")
     private Long userId;

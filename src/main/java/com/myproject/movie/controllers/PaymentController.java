@@ -1,6 +1,6 @@
 package com.myproject.movie.controllers;
 
-import com.myproject.movie.models.dtos.requests.BookingRequest;
+import com.myproject.movie.models.dtos.requests.BookingRequestDto;
 import com.myproject.movie.models.dtos.responses.PaymentResponseDto;
 import com.myproject.movie.models.entities.Booking;
 import com.myproject.movie.services.BookingService;
@@ -21,8 +21,8 @@ public class PaymentController {
     private final PaymentService paymentService;
 
     @PostMapping("/book-and-pay")
-    public ResponseEntity<PaymentResponseDto> bookAndPay(@Valid @RequestBody BookingRequest request) {
-        Booking booking = bookingService.bookSeats(request.getScreeningId(), request.getSeatIds(), request.getUserId());
+    public ResponseEntity<PaymentResponseDto> bookAndPay(@Valid @RequestBody BookingRequestDto request) {
+        Booking booking = bookingService.bookSeats(request.getScreeningId(), request.getScreeningSeatIds(), request.getUserId());
         PaymentResponseDto paymentResponse = paymentService.initiatePayment(booking.getId(), request.getPaymentMethod());
 
         return ResponseEntity.ok(paymentResponse);

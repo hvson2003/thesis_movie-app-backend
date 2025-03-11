@@ -3,19 +3,16 @@ package com.myproject.movie.utils;
 import com.myproject.movie.models.entities.User;
 import com.myproject.movie.models.enums.UserRole;
 import com.myproject.movie.repositories.UserRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
 import java.util.Optional;
 
 @Component
+@RequiredArgsConstructor
 public class CustomPermissionChecker {
-
     private final UserRepository userRepository;
-
-    public CustomPermissionChecker(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
 
     public boolean hasAccess(Authentication authentication, Long userId) {
         String email = authentication.getName();

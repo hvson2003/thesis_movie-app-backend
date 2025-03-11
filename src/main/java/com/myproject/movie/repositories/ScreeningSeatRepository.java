@@ -6,4 +6,5 @@ import java.util.List;
 
 public interface ScreeningSeatRepository extends JpaRepository<ScreeningSeat, Long> {
     List<ScreeningSeat> findByScreeningId(Long screeningId);
+    List<ScreeningSeat> findByIdIn(List<Long> ids);
 }
