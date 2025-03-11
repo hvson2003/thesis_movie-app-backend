@@ -8,7 +8,7 @@ import java.util.List;
 public interface TheaterService {
     List<Theater> findAll();
     Theater findById(Long id);
-    List<Theater> getTheatersByMovieCityBrandAndDate(Long id, Long cityId, Long brandId, LocalDate date);
+    List<Theater> getTheatersByMovieCityBrandAndDate(Long movieId, Long cityId, Long brandId, LocalDate date);
     Theater saveOrUpdate(Long id, Theater newTheater);
     void deleteById(Long id);
 }

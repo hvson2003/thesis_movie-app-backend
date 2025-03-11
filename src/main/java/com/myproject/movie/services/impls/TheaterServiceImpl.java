@@ -47,7 +47,8 @@ public class TheaterServiceImpl implements TheaterService {
 
         theaters.forEach(theater -> theater.getRooms().forEach(room ->
                 room.setScreenings(room.getScreenings().stream()
-                        .filter(screening -> !screening.getStartTime().isBefore(startOfDay) &&
+                        .filter(screening -> screening.getMovie().getId().equals(movieId) &&
+                                !screening.getStartTime().isBefore(startOfDay) &&
                                 !screening.getStartTime().isAfter(endOfDay))
                         .toList())
         ));
