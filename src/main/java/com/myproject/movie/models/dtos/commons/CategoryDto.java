@@ -6,7 +6,6 @@ import lombok.Data;
 
 @Data
 public class CategoryDto {
-    @JsonProperty("category_id")
     private Long id;
 
     @NotBlank(message = "Category name is required")

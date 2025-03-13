@@ -32,6 +32,16 @@ public class TheaterController {
         return ResponseEntity.ok(theater);
     }
 
+    @GetMapping("/movie/{movieId}/city/{cityId}")
+    public ResponseEntity<List<Theater>> getTheatersByMovieCityAndDate(
+            @PathVariable Long movieId,
+            @PathVariable Long cityId,
+            @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date) {
+        List<Theater> theaters = theaterService.getTheatersByMovieCityAndDate(movieId, cityId, date);
+
+        return ResponseEntity.ok(theaters);
+    }
+
     @GetMapping("/movie/{movieId}/city/{cityId}/brand/{brandId}")
     public ResponseEntity<List<Theater>> getTheatersByMovieCityBrandAndDate(
             @PathVariable Long movieId,
