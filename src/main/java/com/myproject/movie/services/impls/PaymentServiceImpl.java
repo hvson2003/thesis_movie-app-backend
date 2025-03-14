@@ -16,6 +16,7 @@ import com.myproject.movie.repositories.PaymentRepository;
 import com.myproject.movie.repositories.ScreeningSeatRepository;
 import com.myproject.movie.services.PaymentService;
 import com.stripe.Stripe;
+import com.stripe.exception.StripeException;
 import com.stripe.model.PaymentIntent;
 import com.stripe.param.PaymentIntentCreateParams;
 import lombok.RequiredArgsConstructor;
@@ -56,8 +57,14 @@ public class PaymentServiceImpl implements PaymentService {
         }
 
         Payment savedPayment = paymentRepository.save(payment);
-
         return paymentMapper.toPaymentResponseDto(savedPayment);
+    }
+
+    @Override
+    public PaymentResponseDto getPaymentStatus(String transactionId) {
+        Payment payment = paymentRepository.findByTransactionId(transactionId)
+                .orElseThrow(() -> new IllegalArgumentException("Payment not found with transactionId: " + transactionId));
+        return paymentMapper.toPaymentResponseDto(payment);
     }
 
     private Payment createPayment(Booking booking, PaymentMethod paymentMethod) {
@@ -75,35 +82,52 @@ public class PaymentServiceImpl implements PaymentService {
         bookingRepository.save(booking);
 
         List<BookingSeat> bookingSeats = bookingSeatRepository.findByBookingId(booking.getId());
-        if (bookingSeats.isEmpty()) {
-            log.warn("No seats found for bookingId: {}", booking.getId());
-            return;
-        }
+        validateBookingSeats(booking, bookingSeats);
 
         List<Long> screeningSeatIds = bookingSeats.stream()
                 .map(bs -> bs.getScreeningSeat().getId())
                 .collect(Collectors.toList());
 
-        List<ScreeningSeat> seatsToConfirm = screeningSeatRepository.findByIdIn(screeningSeatIds);
-        if (seatsToConfirm.isEmpty()) {
-            log.error("No ScreeningSeats found for screeningSeatIds: {}", screeningSeatIds);
-            throw new IllegalStateException("No seats found to confirm for bookingId: " + booking.getId());
-        }
+        List<ScreeningSeat> seatsToConfirm = fetchScreeningSeats(screeningSeatIds, booking.getId());
+        updateSeatStatus(seatsToConfirm, booking.getId());
+    }
 
-        seatsToConfirm.forEach(seat -> {
+    private void validateBookingSeats(Booking booking, List<BookingSeat> bookingSeats) {
+        if (bookingSeats.isEmpty()) {
+            log.warn("No seats found for bookingId: {}", booking.getId());
+            throw new IllegalStateException("No seats associated with bookingId: " + booking.getId());
+        }
+    }
+
+    private List<ScreeningSeat> fetchScreeningSeats(List<Long> screeningSeatIds, Long bookingId) {
+        List<ScreeningSeat> seats = screeningSeatRepository.findByIdIn(screeningSeatIds);
+        if (seats.isEmpty()) {
+            log.error("No ScreeningSeats found for screeningSeatIds: {}", screeningSeatIds);
+            throw new IllegalStateException("No seats found to confirm for bookingId: " + bookingId);
+        }
+        return seats;
+    }
+
+    private void updateSeatStatus(List<ScreeningSeat> seats, Long bookingId) {
+        seats.forEach(seat -> {
             if (seat.getStatus() == SeatStatus.RESERVED) {
                 seat.setStatus(SeatStatus.BOOKED);
             }
         });
-        screeningSeatRepository.saveAll(seatsToConfirm);
-        log.info("Confirmed bookingId: {}, updated {} seats to BOOKED", booking.getId(), seatsToConfirm.size());
+        screeningSeatRepository.saveAll(seats);
+        log.info("Confirmed bookingId: {}, updated {} seats to BOOKED", bookingId, seats.size());
     }
 
     private void processPayment(Payment payment, PaymentMethod paymentMethod, Booking booking) {
-        if (paymentMethod == PaymentMethod.CREDIT_CARD) {
-            processStripePayment(payment, booking);
-        } else if (paymentMethod == PaymentMethod.BANK_TRANSFER) {
-            processBankTransferPayment(payment, booking);
+        switch (paymentMethod) {
+            case CREDIT_CARD:
+                processStripePayment(payment, booking);
+                break;
+            case BANK_TRANSFER:
+                processVietQRPayment(payment, booking);
+                break;
+            default:
+                throw new IllegalArgumentException("Unsupported payment method: " + paymentMethod);
         }
     }
 
@@ -122,21 +146,69 @@ public class PaymentServiceImpl implements PaymentService {
             PaymentIntent intent = PaymentIntent.create(params);
             payment.setTransactionId(intent.getId());
             payment.setClientSecret(intent.getClientSecret());
+            payment.setStatus(PaymentStatus.PENDING);
 
-            payment.setStatus(PaymentStatus.SUCCESSFUL); // Should be replaced with actual verification from Stripe
+            paymentRepository.save(payment);
         } catch (Exception e) {
             payment.setStatus(PaymentStatus.FAILED);
+            log.error("Stripe payment initiation failed for bookingId: {}", booking.getId(), e);
             throw new RuntimeException("Stripe payment initiation failed: " + e.getMessage(), e);
         }
     }
 
-    private void processBankTransferPayment(Payment payment, Booking booking) {
+    private void processVietQRPayment(Payment payment, Booking booking) {
         payment.setPaymentGateway("VIETQR");
-        String qrCodeUrl = generateVietQRCode(booking.getTotalAmount(), booking.getId());
-        payment.setQrCodeUrl(qrCodeUrl);
+
+        try {
+            String qrCodeUrl = generateVietQRCode(booking.getTotalAmount(), booking.getId());
+            payment.setQrCodeUrl(qrCodeUrl);
+            payment.setStatus(PaymentStatus.PENDING);
+            payment.setTransactionId("VIETQR-" + booking.getId());
+        } catch (Exception e) {
+            payment.setStatus(PaymentStatus.FAILED);
+            log.error("VietQR payment initiation failed for bookingId: {}", booking.getId(), e);
+            throw new RuntimeException("VietQR payment initiation failed: " + e.getMessage(), e);
+        }
+    }
+
+    @Transactional
+    public PaymentResponseDto confirmPayment(String paymentIntentId) {
+        try {
+            Stripe.apiKey = stripeApiKey;
+            PaymentIntent intent = PaymentIntent.retrieve(paymentIntentId);
+
+            Payment payment = paymentRepository.findByTransactionId(paymentIntentId)
+                    .orElseThrow(() -> new IllegalArgumentException("Payment not found for intent: " + paymentIntentId));
+
+            if ("succeeded".equals(intent.getStatus())) {
+                payment.setStatus(PaymentStatus.SUCCESSFUL);
+                confirmBooking(payment.getBooking());
+            } else if ("requires_payment_method".equals(intent.getStatus()) ||
+                    "requires_action".equals(intent.getStatus())) {
+                payment.setStatus(PaymentStatus.PENDING);
+            } else {
+                payment.setStatus(PaymentStatus.FAILED);
+            }
+
+            Payment updatedPayment = paymentRepository.save(payment);
+            return paymentMapper.toPaymentResponseDto(updatedPayment);
+
+        } catch (StripeException e) {
+            log.error("Error confirming payment intent: {}", paymentIntentId, e);
+            throw new RuntimeException("Payment confirmation failed: " + e.getMessage(), e);
+        }
     }
 
     private String generateVietQRCode(Float amount, Long bookingId) {
-        return "https://vietqr.example.com/qr?amount=" + amount + "&bookingId=" + bookingId;
+        String bankId = "970415";
+        String accountNo = "106875083952";
+        String template = "compact";
+        String accountName = "Movie Booking";
+        String description = "Thanh toan dat ve " + bookingId;
+
+        return String.format(
+                "https://img.vietqr.io/image/%s-%s-%s.png?amount=%.0f&addInfo=%s&accountName=%s",
+                bankId, accountNo, template, amount, description, accountName
+        );
     }
 }

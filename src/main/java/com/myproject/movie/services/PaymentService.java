@@ -5,4 +5,6 @@ import com.myproject.movie.models.enums.PaymentMethod;
 
 public interface PaymentService {
     PaymentResponseDto initiatePayment(Long bookingId, PaymentMethod paymentMethod);
+    PaymentResponseDto getPaymentStatus(String transactionId);
+    PaymentResponseDto confirmPayment(String paymentIntentId);
 }
